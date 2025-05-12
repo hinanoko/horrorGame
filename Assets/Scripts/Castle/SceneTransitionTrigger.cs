@@ -14,7 +14,7 @@ public class SceneTransitionTrigger : MonoBehaviour
         {
             Debug.Log("玩家离开城堡，加载下一个场景：");
             //SceneManager.LoadScene(nextSceneName);
-            SceneManager.LoadScene("GameOver");
+            SceneManager.LoadScene("Level3");
         }
     }
 }

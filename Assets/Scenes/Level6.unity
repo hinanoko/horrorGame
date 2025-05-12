@@ -4880,7 +4880,7 @@ GameObject:
   - component: {fileID: 419033499}
   - component: {fileID: 419033498}
   - component: {fileID: 419033497}
-  - component: {fileID: 419033496}
+  - component: {fileID: 419033501}
   m_Layer: 0
   m_Name: ExitCube
   m_TagString: Untagged
@@ -4888,19 +4888,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &419033496
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 419033495}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06aa121c30ed3134fbfece15c0f920ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerTag: Player
 --- !u!65 &419033497
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4979,6 +4966,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 38
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &419033501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 419033495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c318333a5c9f8a4eb5b4e03b2132383, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerTag: Player
 --- !u!1001 &419887067
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14641,7 +14641,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c680e0f69b61bb4eab7122330eee464, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  letterCanvas: {fileID: 2138678608}
+  scrollCanvas: {fileID: 0}
+  scrollText: {fileID: 0}
+  interactionRange: 5
 --- !u!64 &1236736805
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -21801,10 +21803,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44ab65f0880632e4f9eaaa1e5cac8e53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lid: {fileID: 0}
+  openAngle: -90
+  openSpeed: 2
   playerPickup: {fileID: 1670935222}
   interactionRange: 3
-  playerCamera: {fileID: 0}
-  isOpen: 0
 --- !u!1001 &1845187179
 PrefabInstance:
   m_ObjectHideFlags: 0
