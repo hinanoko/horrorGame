@@ -15,14 +15,6 @@ public class ScrollOpener : MonoBehaviour
     private Camera mainCamera;
     private ItemPickup itemPickup;
 
-<<<<<<< HEAD
-    private Camera myCamera; // 改名
-
-    void Start()
-    {
-        letterCanvas.SetActive(false);
-        myCamera = Camera.main; // 改名
-=======
     private void Start()
     {
         // Hide UI at start
@@ -33,7 +25,6 @@ public class ScrollOpener : MonoBehaviour
         
         mainCamera = Camera.main;
         itemPickup = FindObjectOfType<ItemPickup>();
->>>>>>> 426642d5cd8cf6ba8ebe6945160da9bb82f25bb0
 
         // Lock cursor at start
         Cursor.lockState = CursorLockMode.Locked;
@@ -44,20 +35,7 @@ public class ScrollOpener : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1) && !isInspecting) // Right click
         {
-<<<<<<< HEAD
-            Ray ray = myCamera.ScreenPointToRay(Input.mousePosition); // 改名
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit, 5f))
-            {
-                if (hit.collider.gameObject == this.gameObject)
-                {
-                    EnterInspectMode();
-                }
-            }
-=======
             TryReadScroll();
->>>>>>> 426642d5cd8cf6ba8ebe6945160da9bb82f25bb0
         }
         else if (isInspecting && Input.GetKeyDown(KeyCode.Escape))
         {

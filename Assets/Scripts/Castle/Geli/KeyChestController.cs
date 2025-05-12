@@ -19,15 +19,15 @@ public class KeyChestController : MonoBehaviour
     private Camera cam;                 // 主摄像机引用
 
     void Awake()
+{
+    // 如果 Inspector 里没赋 lid，就尝试在子物体里找名为 "chest_top" 的 Transform
+    if (lid == null)
     {
-        // 如果 Inspector 里没赋 lid，就尝试在子物体里找名为 "chest_top" 的 Transform
+        lid = transform.Find("chest_top");
         if (lid == null)
-        {
-            lid = transform.Find("chest_top");
-            if (lid == null)
-                Debug.LogError($"[{nameof(KeyDoorController)}] 没有在 {gameObject.name} 下找到名为 'chest_top' 的子物体，请检查层级或手动赋值。");
-        }
+            Debug.LogError($"[{nameof(KeyChestController)}] 没有在 {gameObject.name} 下找到名为 'chest_top' 的子物体，请检查层级或手动赋值。");
     }
+}
 
     void Start()
     {
