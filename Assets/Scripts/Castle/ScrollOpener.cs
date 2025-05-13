@@ -10,6 +10,7 @@ public class ScrollOpener : MonoBehaviour
     
     [Header("Settings")]
     [SerializeField] private float interactionRange = 5f;
+    [SerializeField] private bool requireVase = false;
     
     private bool isInspecting = false;
     private Camera mainCamera;
@@ -45,7 +46,7 @@ public class ScrollOpener : MonoBehaviour
 
     private void TryReadScroll()
     {
-        if (mainCamera == null || scrollCanvas == null || itemPickup == null) return;
+        if (mainCamera == null || scrollCanvas == null) return;
 
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
@@ -54,16 +55,22 @@ public class ScrollOpener : MonoBehaviour
         {
             if (hit.collider.gameObject == gameObject)
             {
-                // Check if player is holding the vase
-                if (itemPickup.isHoldingItem && 
-                    itemPickup.currentItem != null && 
-                    itemPickup.currentItem.name.Contains("vase.002"))
+                if (requireVase)
                 {
-                    OpenScroll();
+                    if (itemPickup != null && itemPickup.isHoldingItem && 
+                        itemPickup.currentItem != null && 
+                        itemPickup.currentItem.name.Contains("vase.002"))
+                    {
+                        OpenScroll();
+                    }
+                    else
+                    {
+                        Debug.Log("You need to hold the special vase to read this scroll.");
+                    }
                 }
                 else
                 {
-                    Debug.Log("You need to hold the special vase to read this scroll.");
+                    OpenScroll();
                 }
             }
         }
