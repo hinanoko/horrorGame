@@ -14,7 +14,7 @@ public class Level9Trans : MonoBehaviour
         {
             Debug.Log("����뿪�Ǳ���������һ��������");
             //SceneManager.LoadScene(nextSceneName);
-            SceneManager.LoadScene("Level1");
+            SceneManager.LoadScene("GameOver");
         }
     }
 }

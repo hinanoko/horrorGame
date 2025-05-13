@@ -17,6 +17,11 @@ public class GameOverMenu : MonoBehaviour
     {
 
     }
+
+    public void LoadLevelByName(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+    }
     public void RestartGame()
     {
         SceneManager.LoadScene("Level1");

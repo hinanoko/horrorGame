@@ -22,6 +22,11 @@ public class StartGameMenu : MonoBehaviour
         SceneManager.LoadScene("Level0");
     }
 
+    public void LoadLevelByName(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+    }
+
     // 退出游戏方法
     public void QuitGame()
     {
