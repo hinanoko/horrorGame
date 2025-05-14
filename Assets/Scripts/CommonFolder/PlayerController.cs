@@ -12,10 +12,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float maxLookUpAngle = 90f;
     [SerializeField] private float maxLookDownAngle = -90f;
     [Header("jump setting")]
-    [SerializeField] private float jumpForce = 5f;
-    [SerializeField] private float gravity = -9.81f;
+    [SerializeField] private float jumpForce = 8f;        // å¢åŠ è·³è·ƒåŠ›åº¦
+    [SerializeField] private float gravity = -15f;        // å¢åŠ é‡åŠ›
     [SerializeField] private LayerMask groundMask;
-    [SerializeField] private float groundCheckDistance = 0.4f;
+    [SerializeField] private float groundCheckDistance = 1.0f;  // å¢åŠ åœ°é¢æ£€æµ‹è·ç¦»
 
     private float rotationX = 0f;
     private CharacterController characterController;
@@ -23,14 +23,27 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     void Start()
     {
-        // »ñÈ¡×é¼ş
+        // è·å–ç»„ä»¶
         if (playerCamera == null)
             playerCamera = GetComponentInChildren<Camera>();
         characterController = GetComponent<CharacterController>();
-        // Ëø¶¨²¢Òş²ØÊó±ê
+        
+        // è®¾ç½®è§’è‰²æ§åˆ¶å™¨å‚æ•°
+        if (characterController != null)
+        {
+            characterController.radius = 0.3f;        // å‡å°ç¢°æ’åŠå¾„
+            characterController.height = 1.8f;        // é€‚å½“è°ƒæ•´é«˜åº¦
+            characterController.stepOffset = 0.7f;    // å¢åŠ å°é˜¶é«˜åº¦
+            characterController.slopeLimit = 75f;     // å¢åŠ å¯æ”€çˆ¬æ–œå¡è§’åº¦
+            characterController.skinWidth = 0.1f;     // å¢åŠ çš®è‚¤å®½åº¦
+            characterController.minMoveDistance = 0.001f; // å‡å°æœ€å°ç§»åŠ¨è·ç¦»
+        }
+        
+        // é”å®šé¼ æ ‡å…‰æ ‡
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
+    
     void Update()
     {
         CheckGrounded();
@@ -41,52 +54,89 @@ public class PlayerController : MonoBehaviour
 
     void CheckGrounded()
     {
-        // ¼ì²âÊÇ·ñÔÚµØÃæÉÏ
-        isGrounded = Physics.CheckSphere(transform.position, groundCheckDistance, groundMask);
+        // æ£€æµ‹æ˜¯å¦åœ¨åœ°é¢ä¸Šï¼ˆä½¿ç”¨å¤šç‚¹æ£€æµ‹ï¼‰
+        Vector3 position = transform.position;
+        Vector3 center = position + characterController.center;
+        float radius = characterController.radius;
+        
+        // ä¸­å¿ƒç‚¹æ£€æµ‹
+        bool centerGrounded = Physics.CheckSphere(center, groundCheckDistance, groundMask);
+        // å››å‘¨ç‚¹æ£€æµ‹ï¼ˆå¢åŠ æ£€æµ‹ç‚¹çš„æ•°é‡ï¼‰
+        bool frontGrounded = Physics.CheckSphere(center + transform.forward * radius, groundCheckDistance, groundMask);
+        bool backGrounded = Physics.CheckSphere(center - transform.forward * radius, groundCheckDistance, groundMask);
+        bool leftGrounded = Physics.CheckSphere(center - transform.right * radius, groundCheckDistance, groundMask);
+        bool rightGrounded = Physics.CheckSphere(center + transform.right * radius, groundCheckDistance, groundMask);
+        // å¢åŠ å¯¹è§’çº¿æ£€æµ‹ç‚¹
+        bool frontLeftGrounded = Physics.CheckSphere(center + (transform.forward - transform.right).normalized * radius, groundCheckDistance, groundMask);
+        bool frontRightGrounded = Physics.CheckSphere(center + (transform.forward + transform.right).normalized * radius, groundCheckDistance, groundMask);
+        bool backLeftGrounded = Physics.CheckSphere(center + (-transform.forward - transform.right).normalized * radius, groundCheckDistance, groundMask);
+        bool backRightGrounded = Physics.CheckSphere(center + (-transform.forward + transform.right).normalized * radius, groundCheckDistance, groundMask);
+        
+        // åªè¦æœ‰ä¸€ä¸ªç‚¹æ£€æµ‹åˆ°åœ°é¢å°±è®¤ä¸ºåœ¨åœ°é¢ä¸Š
+        isGrounded = centerGrounded || frontGrounded || backGrounded || leftGrounded || rightGrounded ||
+                    frontLeftGrounded || frontRightGrounded || backLeftGrounded || backRightGrounded;
 
-        // Èç¹ûÔÚµØÃæÉÏÇÒÏÂÂäËÙ¶ÈÎª¸º£¬ÖØÖÃ´¹Ö±ËÙ¶È
+        // å¦‚æœåœ¨åœ°é¢ä¸Šä¸”å‚ç›´é€Ÿåº¦ä¸ºè´Ÿï¼Œåˆ™è®¾ç½®å‚ç›´é€Ÿåº¦
         if (isGrounded && velocity.y < 0)
         {
-            velocity.y = -2f; // ÉèÖÃÒ»¸öĞ¡µÄ¸ºÖµ£¬È·±£½ÇÉ«½ôÌùµØÃæ
+            velocity.y = -1f; // å‡å°è´Ÿå€¼ï¼Œä½¿è§’è‰²æ›´å®¹æ˜“èµ°ä¸Šå°é˜¶
         }
     }
+    
     void HandleMovement()
     {
-        // »ñÈ¡ÊäÈë
+        // è·å–è¾“å…¥
         float horizontal = Input.GetAxisRaw("Horizontal"); // A D
         float vertical = Input.GetAxisRaw("Vertical");     // W S
-        // »ñÈ¡ÉãÏñ»úµÄÇ°·½ºÍÓÒ·½Ïò£¨ºöÂÔYÖá£©
+        
+        // è·å–ç›¸æœºçš„å‰æ–¹å’Œå³æ–¹ï¼ˆåŸºäºYè½´ï¼‰
         Vector3 forward = playerCamera.transform.forward;
         Vector3 right = playerCamera.transform.right;
-        // ½«YÖá·ÖÁ¿ÉèÎª0£¬±£³ÖË®Æ½ÒÆ¶¯
+        
+        // å°†Yåˆ†é‡è®¾ä¸º0ï¼Œä¿æŒæ°´å¹³ç§»åŠ¨
         forward.y = 0;
         right.y = 0;
         forward.Normalize();
         right.Normalize();
-        // ¼ÆËãÒÆ¶¯·½Ïò
+        
+        // è®¡ç®—ç§»åŠ¨æ–¹å‘
         Vector3 moveDirection = (forward * vertical + right * horizontal).normalized;
-        // Ó¦ÓÃÒÆ¶¯
+        
+        // åº”ç”¨ç§»åŠ¨ï¼ˆå¢åŠ ä¸Šå¡æ—¶çš„ç§»åŠ¨é€Ÿåº¦ï¼‰
         if (moveDirection.magnitude >= 0.1f)
         {
-            characterController.Move(moveDirection * moveSpeed * Time.deltaTime);
+            float currentSpeed = moveSpeed;
+            // å¦‚æœåœ¨ä¸Šå¡ï¼Œå¢åŠ é€Ÿåº¦
+            if (isGrounded && Vector3.Dot(moveDirection, Vector3.up) > 0.1f)
+            {
+                currentSpeed *= 1.5f;  // å¢åŠ ä¸Šå¡é€Ÿåº¦æå‡
+            }
+            characterController.Move(moveDirection * currentSpeed * Time.deltaTime);
         }
 
-        velocity.y += gravity * Time.deltaTime;
+        // åº”ç”¨é‡åŠ›
+        if (!isGrounded)
+        {
+            velocity.y += gravity * Time.deltaTime;
+        }
         characterController.Move(velocity * Time.deltaTime);
     }
+    
     void HandleMouseLook()
     {
-        // »ñÈ¡Êó±êÊäÈë
+        // è·å–é¼ æ ‡è¾“å…¥
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
-        // ´¹Ö±Ğı×ª£¨ÉÏÏÂ¿´£©
+        
+        // å‚ç›´æ—‹è½¬ï¼ˆä¸Šä¸‹çœ‹ï¼‰
         rotationX -= mouseY;
         rotationX = Mathf.Clamp(rotationX, maxLookDownAngle, maxLookUpAngle);
-        //playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
         transform.localRotation = Quaternion.Euler(rotationX, transform.localRotation.eulerAngles.y, 0);
-        // Ë®Æ½Ğı×ª£¨×óÓÒ¿´£©
+        
+        // æ°´å¹³æ—‹è½¬ï¼ˆå·¦å³çœ‹ï¼‰
         transform.Rotate(Vector3.up * mouseX);
     }
+    
     void HandleJump()
     {
         if (Input.GetButtonDown("Jump") && isGrounded)
@@ -94,13 +144,15 @@ public class PlayerController : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
         }
     }
-    // ½âËøÊó±êµÄ·½·¨£¨ÀıÈç´ò¿ª²Ëµ¥Ê±£©
+    
+    // è§£é”é¼ æ ‡çš„æ–¹æ³•ï¼ˆç”¨äºæ‰“å¼€èœå•æ—¶ï¼‰
     public void UnlockCursor()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
-    // Ëø¶¨Êó±êµÄ·½·¨
+    
+    // é”å®šé¼ æ ‡çš„æ–¹æ³•
     public void LockCursor()
     {
         Cursor.lockState = CursorLockMode.Locked;

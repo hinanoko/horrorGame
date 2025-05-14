@@ -6681,6 +6681,7 @@ MonoBehaviour:
   scrollCanvas: {fileID: 1559467261}
   scrollText: {fileID: 0}
   interactionRange: 5
+  requireVase: 1
 --- !u!64 &602106882
 MeshCollider:
   m_ObjectHideFlags: 0
