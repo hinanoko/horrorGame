@@ -24,7 +24,7 @@ public class GameOverMenu : MonoBehaviour
     }
     public void RestartGame()
     {
-        SceneManager.LoadScene("Level1");
+        SceneManager.LoadScene("Level0");
     }
 
     // ÍË³öÓÎÏ·
